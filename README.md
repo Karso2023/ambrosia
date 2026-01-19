@@ -6,7 +6,6 @@ Commit To Change: An AI Agents Hackathon
 ambrosia.ai is a meal planning assistant that helps users eat nutritiously while staying within their food budget and automatically building savings. 
 
 
-
 ## Features
 
 - Optimised weekly meal plans and grocery lists
@@ -17,6 +16,7 @@ ambrosia.ai is a meal planning assistant that helps users eat nutritiously while
 ## AI Observability 
 
 We used Opik to monitor our agent for AI observability.
+
 ## Deployment
 
 To deploy this project run
