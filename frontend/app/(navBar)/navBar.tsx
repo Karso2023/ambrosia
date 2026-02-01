@@ -32,6 +32,10 @@ export function NavBar() {
     <>
       <nav className="border-b bg-white dark:bg-black p-4">
         <div className="flex items-center justify-between max-w-7xl mx-auto">
+          <div className="flex items-center gap-8">
+            <Link href="/" className="text-xl font-bold text-black dark:text-white">
+              Logo
+            </Link>
           <NavigationMenu>
             <NavigationMenuList>
               <NavigationMenuItem>
@@ -51,6 +55,7 @@ export function NavBar() {
               </NavigationMenuItem>
             </NavigationMenuList>
           </NavigationMenu>
+          </div>
           
           <div className="flex items-center gap-4">
             <button 
