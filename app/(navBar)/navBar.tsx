@@ -2,31 +2,54 @@
 
 import * as React from "react"
 import Link from "next/link"
-import { CircleAlertIcon } from "lucide-react"
+import { useRouter } from "next/navigation"
+import { createClient } from "@/lib/client"
 import { LoginDialog } from "./loginPage"
 import { RegisterDialog } from "./registerPage"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import {
   NavigationMenu,
-  NavigationMenuContent,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
-  NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu"
-
-const components = [
-  {
-    title: "Alert Dialog",
-    href: "/docs/primitives/alert-dialog",
-    description:
-      "A modal dialog that interrupts the user with important content and expects a response.",
-  },
-]
+import type { User } from "@supabase/supabase-js"
 
 export function NavBar() {
+  const router = useRouter()
+  const [user, setUser] = React.useState<User | null>(null)
   const [isLoginOpen, setIsLoginOpen] = React.useState(false)
   const [isRegisterOpen, setIsRegisterOpen] = React.useState(false)
+
+  React.useEffect(() => {
+    const supabase = createClient()
+
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      setUser(user)
+    })
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        setUser(session?.user ?? null)
+      }
+    )
+
+    return () => subscription.unsubscribe()
+  }, [])
+
+  const handleLogout = async () => {
+    const supabase = createClient()
+    await supabase.auth.signOut()
+    setUser(null)
+    window.location.href = "/"
+  }
 
   return (
     <>
@@ -36,41 +59,60 @@ export function NavBar() {
             <Link href="/" className="text-xl font-bold text-black dark:text-white">
               Logo
             </Link>
-          <NavigationMenu>
-            <NavigationMenuList>
-              <NavigationMenuItem>
-                <NavigationMenuLink href="/" className={navigationMenuTriggerStyle()}>
-                  Home
-                </NavigationMenuLink>
-              </NavigationMenuItem>
-              <NavigationMenuItem>
-                <NavigationMenuLink href="/about" className={navigationMenuTriggerStyle()}>
-                  About
-                </NavigationMenuLink>
-              </NavigationMenuItem>
-              <NavigationMenuItem>
-                <NavigationMenuLink href="/contact" className={navigationMenuTriggerStyle()}>
-                  Contact
-                </NavigationMenuLink>
-              </NavigationMenuItem>
-            </NavigationMenuList>
-          </NavigationMenu>
+            <NavigationMenu>
+              <NavigationMenuList>
+                <NavigationMenuItem>
+                  <NavigationMenuLink href="/" className={navigationMenuTriggerStyle()}>
+                    Home
+                  </NavigationMenuLink>
+                </NavigationMenuItem>
+                <NavigationMenuItem>
+                  <NavigationMenuLink href="/about" className={navigationMenuTriggerStyle()}>
+                    About
+                  </NavigationMenuLink>
+                </NavigationMenuItem>
+                <NavigationMenuItem>
+                  <NavigationMenuLink href="/contact" className={navigationMenuTriggerStyle()}>
+                    Contact
+                  </NavigationMenuLink>
+                </NavigationMenuItem>
+              </NavigationMenuList>
+            </NavigationMenu>
           </div>
-          
-          <div className="flex items-center gap-4">
-            <button 
-              onClick={() => setIsLoginOpen(true)}
-              className="px-4 py-2 text-sm font-medium text-black dark:text-white hover:text-gray-600 dark:hover:text-gray-300"
-            >
-              Login
-            </button>
-            <button 
-              onClick={() => setIsRegisterOpen(true)}
-              className="px-4 py-2 text-sm font-medium bg-black dark:bg-white text-white dark:text-black rounded-md hover:bg-gray-800 dark:hover:bg-gray-200"
-            >
-              Register
-            </button>
-          </div>
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button className="rounded-full outline-none focus-visible:ring-2 focus-visible:ring-ring">
+                <Avatar className="h-9 w-9">
+                  <AvatarImage src={user?.user_metadata?.avatar_url} alt={user?.email ?? ""} />
+                  <AvatarFallback>
+                    {user ? user.email?.charAt(0).toUpperCase() : "?"}
+                  </AvatarFallback>
+                </Avatar>
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              {user ? (
+                <>
+                  <DropdownMenuItem onClick={() => router.push("/dashboard")}>
+                    Dashboard
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleLogout}>
+                    Log out
+                  </DropdownMenuItem>
+                </>
+              ) : (
+                <>
+                  <DropdownMenuItem onClick={() => setIsLoginOpen(true)}>
+                    Login
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setIsRegisterOpen(true)}>
+                    Register
+                  </DropdownMenuItem>
+                </>
+              )}
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </nav>
 

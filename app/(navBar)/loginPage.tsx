@@ -43,7 +43,7 @@ export function LoginDialog({ isOpen, onClose }: LoginDialogProps) {
 
     setLoading(false)
     onClose()
-    window.location.reload()
+    window.location.href = "/dashboard"
   }
 
   const handleGoogleLogin = async () => {
