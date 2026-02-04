@@ -11,6 +11,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import {
@@ -20,6 +21,7 @@ import {
   NavigationMenuList,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu"
+import { Settings } from "lucide-react"
 import type { User } from "@supabase/supabase-js"
 
 export function NavBar() {
@@ -57,22 +59,22 @@ export function NavBar() {
         <div className="flex items-center justify-between max-w-7xl mx-auto">
           <div className="flex items-center gap-8">
             <Link href="/" className="text-xl font-bold text-black dark:text-white">
-              Logo
+              Ambrosia
             </Link>
             <NavigationMenu>
               <NavigationMenuList>
                 <NavigationMenuItem>
-                  <NavigationMenuLink href="/" className={navigationMenuTriggerStyle()}>
-                    Home
+                  <NavigationMenuLink href="/#features" className={navigationMenuTriggerStyle()}>
+                    Features
                   </NavigationMenuLink>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
-                  <NavigationMenuLink href="/about" className={navigationMenuTriggerStyle()}>
-                    About
+                  <NavigationMenuLink href="/#get-started" className={navigationMenuTriggerStyle()}>
+                    Get Started
                   </NavigationMenuLink>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
-                  <NavigationMenuLink href="/contact" className={navigationMenuTriggerStyle()}>
+                  <NavigationMenuLink href="/#contact" className={navigationMenuTriggerStyle()}>
                     Contact
                   </NavigationMenuLink>
                 </NavigationMenuItem>
@@ -97,6 +99,11 @@ export function NavBar() {
                   <DropdownMenuItem onClick={() => router.push("/dashboard")}>
                     Dashboard
                   </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => router.push("/settings")}>
+                    <Settings className="size-4" />
+                    Settings
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleLogout}>
                     Log out
                   </DropdownMenuItem>
