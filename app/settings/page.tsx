@@ -85,7 +85,7 @@ export default function SettingsPage() {
               )}
               <Button
                 onClick={handleSave}
-                className="w-full hover:text-blue-600"
+                className="w-full"
                 disabled={loading}
               >
                 {loading ? "Saving..." : "Save Preferences"}

@@ -101,7 +101,7 @@ export function LoginDialog({ isOpen, onClose }: LoginDialogProps) {
             {error && (
               <p className="text-sm text-red-500">{error}</p>
             )}
-            <Button type="submit" className="w-full hover:text-blue-600" disabled={loading}>
+            <Button type="submit" className="w-full" disabled={loading}>
               {loading ? "Logging in..." : "Login"}
             </Button>
           </div>
@@ -111,7 +111,7 @@ export function LoginDialog({ isOpen, onClose }: LoginDialogProps) {
         <Button
           type="button"
           variant="outline"
-          className="w-full hover:text-blue-600"
+          className="w-full"
           onClick={handleGoogleLogin}
         >
           Login with Google

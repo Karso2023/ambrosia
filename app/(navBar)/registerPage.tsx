@@ -111,7 +111,7 @@ export function RegisterDialog({ isOpen, onClose }: RegisterDialogProps) {
                   {error && (
                     <p className="text-sm text-red-500">{error}</p>
                   )}
-                  <Button type="submit" className="w-full hover:text-blue-600" disabled={loading}>
+                  <Button type="submit" className="w-full" disabled={loading}>
                     {loading ? "Registering..." : "Register"}
                   </Button>
                 </div>
