@@ -8,6 +8,7 @@ import { Loader2, MapPin } from "lucide-react"
 interface Suggestion {
   description: string
   placeId: string
+  postcode: string
 }
 
 interface PostcodeFieldProps {
@@ -59,9 +60,8 @@ export function PostcodeField({ value, onChange }: PostcodeFieldProps) {
   }
 
   const handleSelect = (suggestion: Suggestion) => {
-    // Extract just the postcode from the description (e.g. "SW1A 1AA, UK" -> "SW1A 1AA")
-    const postcode = suggestion.description.split(",")[0].trim()
-    onChange(postcode)
+    // Use the extracted postcode from the API
+    onChange(suggestion.postcode)
     setOpen(false)
     setSuggestions([])
   }

@@ -16,6 +16,7 @@ import { PostcodeField } from "./postcodeField"
 import { BudgetField } from "./budgetField"
 import { ReligionField } from "./religionField"
 import { DietaryField } from "./dietaryField"
+import { MealPreferenceField, type MealPreference } from "./mealPreferenceField"
 import { setUserPreferences } from "@/lib/preferences"
 import {
   MapPin,
@@ -40,6 +41,7 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
   const [budget, setBudget] = useState("")
   const [religion, setReligion] = useState<string[]>([])
   const [dietaryRestrictions, setDietaryRestrictions] = useState<string[]>([])
+  const [mealPreference, setMealPreference] = useState<MealPreference | "">("")
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -94,6 +96,7 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
         budget,
         religion,
         dietary_restrictions: dietaryRestrictions,
+        meal_preference: mealPreference as MealPreference,
       })
       onComplete()
     } catch {
@@ -129,6 +132,17 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
         <DietaryField
           value={dietaryRestrictions}
           onChange={setDietaryRestrictions}
+        />
+      ),
+    },
+    {
+      title: "Meal Preference",
+      description: "How do you prefer to have your meals?",
+      icon: <UtensilsCrossed className="size-5" />,
+      content: (
+        <MealPreferenceField
+          value={mealPreference}
+          onChange={setMealPreference}
         />
       ),
     },
@@ -209,7 +223,7 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
   const current = steps[step - 1]
   const totalSteps = steps.length
   const isLastStep = step === totalSteps
-  const canFinish = isLastStep && validationState === "valid"
+  const canFinish = isLastStep && validationState === "valid" && mealPreference !== ""
 
   return (
     <Card className="w-full max-w-sm">

@@ -1,10 +1,13 @@
 import { createClient } from "@/lib/client"
 
+export type MealPreference = "cook" | "eat_out" | "mix"
+
 export interface UserPreferences {
   postcode: string
   budget: string
   religion: string[]
   dietary_restrictions: string[]
+  meal_preference: MealPreference
 }
 
 export const RELIGION_OPTIONS = [
@@ -34,6 +37,7 @@ export async function getUserPreferences(): Promise<UserPreferences> {
     budget: user?.user_metadata?.budget ?? "",
     religion: user?.user_metadata?.religion ?? [],
     dietary_restrictions: user?.user_metadata?.dietary_restrictions ?? [],
+    meal_preference: user?.user_metadata?.meal_preference ?? "cook",
   }
 }
 
