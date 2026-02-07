@@ -115,19 +115,19 @@ export default function Home() {
             <div className="mt-4 text-gray-600 dark:text-gray-400 max-w-2xl mx-auto flex flex-col items-start gap-2">
               <p className="flex items-start gap-2">
                 <CircleSmall className="size-3 mt-1 flex-shrink-0" />
-                Register an account via email, or simply login with your Google account.
-              </p>
-              <p className="flex items-start gap-2">
-                <CircleSmall className="size-3 mt-1 flex-shrink-0" />
-                Input postcode, monthly food budget, religious and dietary requirements, and meal preferences.
-              </p>
-              <p className="flex items-start gap-2">
-                <CircleSmall className="size-3 mt-1 flex-shrink-0" />
-                Tell our friendly AI more about your goals (e.g. bulking at the gym).
-              </p>
-              <p className="flex items-start gap-2">
-                <CircleSmall className="size-3 mt-1 flex-shrink-0" />
-                Click "Finish".
+                Register an account via email, or simply just login with your Google account
+            </p>
+            <p className="flex items-start gap-2">
+              <CircleSmall className="size-3 mt-1 flex-shrink-0"/>
+              Input your personal details such as postcode, monthly food budget, most importantly your religious and dietary requirements and lastly your meal preferences
+            </p>
+            <p className="flex items-start gap-2">
+              <CircleSmall className="size-3 mt-1 flex-shrink-0"/>
+              You could tell our friendly AI more about your preferences (e.g. I want to get big in the gym!)
+            </p>
+            <p className="flex items-start gap-2">
+              <CircleSmall className="size-3 mt-1 flex-shrink-0"/>
+              Click "Finish"
               </p>
             </div>
           </Card>
