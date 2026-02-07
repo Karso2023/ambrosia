@@ -24,6 +24,7 @@ import {
   Check,
   MapPin as MapPinIcon,
   ExternalLink,
+  ShoppingCart,
 } from "lucide-react"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 
@@ -102,6 +103,30 @@ export function MealPlan() {
   const monthNames = ["January", "February", "March", "April", "May", "June",
                       "July", "August", "September", "October", "November", "December"]
   const currentMonthName = monthNames[currentMonth]
+
+  // Checked ingredients state: key = "day-mealType", value = set of ingredient indices
+  const [checkedIngredients, setCheckedIngredients] = useState<Map<string, Set<number>>>(new Map())
+
+  const toggleIngredient = (day: number, mealType: string, index: number) => {
+    const key = `${day}-${mealType}`
+    setCheckedIngredients(prev => {
+      const newMap = new Map(prev)
+      const current = newMap.get(key) || new Set<number>()
+      const newSet = new Set(current)
+      if (newSet.has(index)) {
+        newSet.delete(index)
+      } else {
+        newSet.add(index)
+      }
+      newMap.set(key, newSet)
+      return newMap
+    })
+  }
+
+  const isIngredientChecked = (day: number, mealType: string, index: number): boolean => {
+    const key = `${day}-${mealType}`
+    return checkedIngredients.get(key)?.has(index) || false
+  }
 
   // Restaurant search state
   const [showSearch, setShowSearch] = useState(false)
@@ -794,18 +819,6 @@ export function MealPlan() {
                         <span><span className="font-medium">Difficulty:</span> {selectedDay[dialogMeal].difficulty}</span>
                       )}
                     </div>
-                    {selectedDay[dialogMeal].ingredients && selectedDay[dialogMeal].ingredients!.length > 0 && (
-                      <div>
-                        <p className="text-xs font-medium mb-1">Ingredients:</p>
-                        <div className="max-h-24 overflow-y-auto pr-2">
-                          <ul className="list-disc list-inside text-xs space-y-0.5 text-muted-foreground">
-                            {selectedDay[dialogMeal].ingredients!.map((ing, i) => (
-                              <li key={i}>{ing}</li>
-                            ))}
-                          </ul>
-                        </div>
-                      </div>
-                    )}
                     {selectedDay[dialogMeal].instructions && selectedDay[dialogMeal].instructions!.length > 0 && (
                       <div>
                         <p className="text-xs font-medium mb-1">Instructions:</p>
@@ -838,6 +851,89 @@ export function MealPlan() {
                     </a>
                   </div>
                 )}
+
+                {/* Day Shopping List - combined from all meals */}
+                {(() => {
+                  const dayIngredients: Array<{ meal: string; ingredient: string; mealType: string; index: number }> = []
+                  for (const mealType of ["breakfast", "lunch", "dinner"] as const) {
+                    const meal = selectedDay[mealType]
+                    if (meal.type === "cook" && meal.ingredients) {
+                      meal.ingredients.forEach((ing, i) => {
+                        dayIngredients.push({
+                          meal: mealType,
+                          ingredient: ing,
+                          mealType,
+                          index: i,
+                        })
+                      })
+                    }
+                  }
+
+                  if (dayIngredients.length === 0) return null
+
+                  const totalChecked = dayIngredients.filter(
+                    item => isIngredientChecked(selectedDay.day, item.mealType, item.index)
+                  ).length
+
+                  return (
+                    <div className="p-3 rounded-lg border-2 border-dashed border-primary/30 bg-primary/5 space-y-2">
+                      <div className="flex items-center justify-between">
+                        <h4 className="font-semibold text-sm flex items-center gap-2">
+                          <ShoppingCart className="size-3.5 text-primary" />
+                          Day {selectedDay.day} Shopping List
+                        </h4>
+                        <span className="text-[10px] font-medium text-muted-foreground bg-muted px-2 py-0.5 rounded-full">
+                          {totalChecked}/{dayIngredients.length} bought
+                        </span>
+                      </div>
+
+                      <div className="max-h-40 overflow-y-auto pr-1 space-y-3">
+                        {(["breakfast", "lunch", "dinner"] as const).map(mealType => {
+                          const mealItems = dayIngredients.filter(item => item.mealType === mealType)
+                          if (mealItems.length === 0) return null
+
+                          return (
+                            <div key={mealType}>
+                              <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-1 flex items-center gap-1">
+                                {mealType === "breakfast" && <UtensilsCrossed className="size-2.5" />}
+                                {mealType === "lunch" && <ChefHat className="size-2.5" />}
+                                {mealType === "dinner" && <Apple className="size-2.5" />}
+                                {mealType} — {selectedDay[mealType].meal_name}
+                              </p>
+                              <div className="space-y-0.5">
+                                {mealItems.map((item) => {
+                                  const checked = isIngredientChecked(selectedDay.day, item.mealType, item.index)
+                                  return (
+                                    <button
+                                      key={`${item.mealType}-${item.index}`}
+                                      onClick={() => toggleIngredient(selectedDay.day, item.mealType, item.index)}
+                                      className={`flex items-center gap-2 w-full text-left px-2 py-1.5 rounded-md transition-all text-xs ${
+                                        checked
+                                          ? "bg-green-50 dark:bg-green-950/20 text-green-700 dark:text-green-400"
+                                          : "hover:bg-muted/50 text-muted-foreground"
+                                      }`}
+                                    >
+                                      <div className={`size-4 rounded border-2 flex items-center justify-center shrink-0 transition-colors ${
+                                        checked
+                                          ? "bg-green-500 border-green-500"
+                                          : "border-muted-foreground/30"
+                                      }`}>
+                                        {checked && <Check className="size-3 text-white" />}
+                                      </div>
+                                      <span className={checked ? "line-through opacity-60" : ""}>
+                                        {item.ingredient}
+                                      </span>
+                                    </button>
+                                  )
+                                })}
+                              </div>
+                            </div>
+                          )
+                        })}
+                      </div>
+                    </div>
+                  )
+                })()}
               </div>
             </>
           )}

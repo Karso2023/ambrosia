@@ -1,14 +1,24 @@
 import { NextRequest, NextResponse } from "next/server"
 import { geminiModel } from "@/lib/gemini/client"
 import { buildRephrasePrompt } from "@/lib/gemini/prompts"
-import { validateUserGoal } from "@/lib/gemini/validation"
+import { validateUserGoal, isBlockedContent } from "@/lib/gemini/validation"
+import { createClient } from "@/lib/server"
 
 export async function POST(req: NextRequest) {
   try {
     const { input } = await req.json()
 
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+
     const validation = validateUserGoal(input)
     if (!validation.valid) {
+      if (user && isBlockedContent(input)) {
+        await supabase.from("illegal_prompt_logs").insert({
+          user_id: user.id,
+          prompt_text: input.slice(0, 500),
+        })
+      }
       return NextResponse.json({ error: validation.error }, { status: 400 })
     }
 

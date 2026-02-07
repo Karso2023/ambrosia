@@ -20,6 +20,10 @@ export const userGoalSchema = z
 
 export type ValidationState = "idle" | "validating" | "valid" | "invalid"
 
+export function isBlockedContent(input: string): boolean {
+  return BLOCKED_PATTERNS.some((pattern) => pattern.test(input))
+}
+
 export function validateUserGoal(input: string) {
   const result = userGoalSchema.safeParse(input)
   if (result.success) {
