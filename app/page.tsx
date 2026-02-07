@@ -1,6 +1,7 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { createClient } from "@/lib/client"
 import { NavBar } from "./(navBar)/navBar"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -8,10 +9,28 @@ import { Separator } from "@/components/ui/separator"
 import { CircleSmall, Frown, Smile } from "lucide-react"
 import { RegisterDialog } from "./(navBar)/registerPage"
 import { LoginDialog } from "./(navBar)/loginPage"
+import type { User } from "@supabase/supabase-js"
 
 export default function Home() {
   const [isRegisterOpen, setIsRegisterOpen] = useState(false)
   const [isLoginOpen, setIsLoginOpen] = useState(false)
+  const [user, setUser] = useState<User | null>(null)
+
+  useEffect(() => {
+    const supabase = createClient()
+
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      setUser(user)
+    })
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        setUser(session?.user ?? null)
+      }
+    )
+
+    return () => subscription.unsubscribe()
+  }, [])
 
   return (
     <>
@@ -114,21 +133,23 @@ export default function Home() {
           </Card>
         </section>
 
-        <section id="get-started" className="px-6 py-24 max-w-4xl mx-auto text-center">
-          <Card className="bg-white/50 p-8">
-            <CardTitle>
-              <h2 className="text-3xl text-black dark:text-white text-center">Get Started</h2>
-            </CardTitle>
-            <p className="mt-4 text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-              Create an account and start planning your meals today!
-            </p>
-            <div className="mt-8">
-              <Button size="lg" onClick={() => setIsRegisterOpen(true)}>
-                Sign me up!
-              </Button>
-            </div>
-          </Card>
-        </section>
+        {!user && (
+          <section id="get-started" className="px-6 py-24 max-w-4xl mx-auto text-center">
+            <Card className="bg-white/50 p-8">
+              <CardTitle>
+                <h2 className="text-3xl text-black dark:text-white text-center">Get Started</h2>
+              </CardTitle>
+              <p className="mt-4 text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+                Create an account and start planning your meals today!
+              </p>
+              <div className="mt-8">
+                <Button size="lg" onClick={() => setIsRegisterOpen(true)}>
+                  Sign me up!
+                </Button>
+              </div>
+            </Card>
+          </section>
+        )}
 
         <section id="contact" className="px-6 py-24 max-w-4xl mx-auto text-center">
           <h2 className="text-3xl font-bold text-black dark:text-white">Contact</h2>
