@@ -12,7 +12,7 @@ export function Dashboard() {
     <div className="w-full p-6">
       <h1 className="text-2xl font-bold mb-8 text-black dark:text-white">Dashboard</h1>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-6 gap-2">
+      <div className="grid grid-cols-3 gap-2 max-w-3xl [&>*]:w-58 [&>*]:h-48">
         <FoodBudget />
         <MealPlan />
         <MonthlyExpense />

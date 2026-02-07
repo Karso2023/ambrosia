@@ -64,8 +64,8 @@ export function NavBar() {
             <NavigationMenu>
               <NavigationMenuList>
                 <NavigationMenuItem>
-                  <NavigationMenuLink href="/#features" className={navigationMenuTriggerStyle()}>
-                    Features
+                  <NavigationMenuLink href="/#about" className={navigationMenuTriggerStyle()}>
+                    About Us
                   </NavigationMenuLink>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
