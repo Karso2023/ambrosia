@@ -18,9 +18,10 @@ import { OnboardingWizard } from "@/app/(preferences)/onboardingWizard"
 interface RegisterDialogProps {
   isOpen: boolean
   onClose: () => void
+  onSwitchToLogin: () => void
 }
 
-export function RegisterDialog({ isOpen, onClose }: RegisterDialogProps) {
+export function RegisterDialog({ isOpen, onClose, onSwitchToLogin }: RegisterDialogProps) {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
@@ -121,7 +122,15 @@ export function RegisterDialog({ isOpen, onClose }: RegisterDialogProps) {
           <CardFooter className="flex-col gap-2">
             <div className="text-center text-sm mt-2 ">
               Already have an account?{" "}
-              <a href="#" className="underline w-full hover:text-blue-600" onClick={(e) => { e.preventDefault(); onClose(); }}>
+              <a
+                href="#"
+                className="underline w-full hover:text-blue-600"
+                onClick={(e) => {
+                  e.preventDefault()
+                  onClose()
+                  onSwitchToLogin()
+                }}
+              >
                 Login
               </a>
             </div>

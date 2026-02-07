@@ -109,6 +109,7 @@ export function NavBar() {
                     <Settings className="size-4" />
                     Settings
                   </DropdownMenuItem>
+
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleLogout}>
                     Log out
@@ -130,7 +131,14 @@ export function NavBar() {
       </nav>
 
       <LoginDialog isOpen={isLoginOpen} onClose={() => setIsLoginOpen(false)} />
-      <RegisterDialog isOpen={isRegisterOpen} onClose={() => setIsRegisterOpen(false)} />
+      <RegisterDialog
+        isOpen={isRegisterOpen}
+        onClose={() => setIsRegisterOpen(false)}
+        onSwitchToLogin={() => {
+          setIsRegisterOpen(false)
+          setIsLoginOpen(true)
+        }}
+      />
     </>
   )
 }
