@@ -27,6 +27,9 @@ These look useful:
 https://developers.google.com/maps/documentation/javascript/nearby-search
 https://developers.google.com/maps/documentation/places/web-service/nearby-search
 
+
+Add admin to track user ai behaviours 
+
 ## AI Observability 
 
 We used Opik to monitor our agent for AI observability.

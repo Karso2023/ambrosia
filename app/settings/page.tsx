@@ -14,6 +14,7 @@ import { PostcodeField } from "@/app/(preferences)/postcodeField"
 import { BudgetField } from "@/app/(preferences)/budgetField"
 import { ReligionField } from "@/app/(preferences)/religionField"
 import { DietaryField } from "@/app/(preferences)/dietaryField"
+import { MealPreferenceField, type MealPreference } from "@/app/(preferences)/mealPreferenceField"
 import { getUserPreferences, setUserPreferences } from "@/lib/preferences"
 import { Settings } from "lucide-react"
 
@@ -22,6 +23,7 @@ export default function SettingsPage() {
   const [budget, setBudget] = useState("")
   const [religion, setReligion] = useState<string[]>([])
   const [dietaryRestrictions, setDietaryRestrictions] = useState<string[]>([])
+  const [mealPreference, setMealPreference] = useState<MealPreference>("cook")
   const [loading, setLoading] = useState(false)
   const [saved, setSaved] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -32,6 +34,7 @@ export default function SettingsPage() {
       setBudget(prefs.budget)
       setReligion(prefs.religion)
       setDietaryRestrictions(prefs.dietary_restrictions)
+      setMealPreference(prefs.meal_preference)
     })
   }, [])
 
@@ -45,6 +48,7 @@ export default function SettingsPage() {
         budget,
         religion,
         dietary_restrictions: dietaryRestrictions,
+        meal_preference: mealPreference,
       })
       setSaved(true)
     } catch {
@@ -76,6 +80,10 @@ export default function SettingsPage() {
               <DietaryField
                 value={dietaryRestrictions}
                 onChange={setDietaryRestrictions}
+              />
+              <MealPreferenceField
+                value={mealPreference}
+                onChange={setMealPreference}
               />
               {error && <p className="text-sm text-red-500">{error}</p>}
               {saved && (
