@@ -12,14 +12,15 @@ export async function GET(req: NextRequest) {
 
     const today = new Date().toISOString().split('T')[0]
 
+    // Get all today's meal activities (completed and missed)
     const { data: activities } = await supabase
       .from("user_activity")
-      .select("metadata")
+      .select("activity_type, metadata")
       .eq("user_id", user.id)
       .eq("activity_date", today)
-      .eq("activity_type", "meal_completed")
+      .in("activity_type", ["meal_completed", "meal_missed"])
 
-    const completedMeals = {
+    const completedMeals: Record<string, boolean | "missed"> = {
       breakfast: false,
       lunch: false,
       dinner: false
@@ -28,7 +29,11 @@ export async function GET(req: NextRequest) {
     activities?.forEach(a => {
       const mealType = a.metadata?.meal_type
       if (mealType && mealType in completedMeals) {
-        completedMeals[mealType as keyof typeof completedMeals] = true
+        if (a.activity_type === "meal_completed") {
+          completedMeals[mealType] = true
+        } else if (a.activity_type === "meal_missed") {
+          completedMeals[mealType] = "missed"
+        }
       }
     })
 
