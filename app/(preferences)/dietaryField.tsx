@@ -20,7 +20,7 @@ export function DietaryField({ value, onChange }: DietaryFieldProps) {
 
   return (
     <div className="grid gap-2">
-      <Label>Dietary Restrictions</Label>
+      <Label>Dietary Restrictions(optional)</Label>
       <div className="flex flex-wrap gap-2">
         {DIETARY_OPTIONS.map((option) => (
           <Button

@@ -68,11 +68,20 @@ export function NavBar() {
                     About Us
                   </NavigationMenuLink>
                 </NavigationMenuItem>
-                <NavigationMenuItem>
-                  <NavigationMenuLink href="/#get-started" className={navigationMenuTriggerStyle()}>
-                    Get Started
-                  </NavigationMenuLink>
-                </NavigationMenuItem>
+                {!user && (
+                  <NavigationMenuItem>
+                    <NavigationMenuLink href="/#get-started" className={navigationMenuTriggerStyle()}>
+                      Get Started
+                    </NavigationMenuLink>
+                  </NavigationMenuItem>
+                )}
+                {user && (
+                  <NavigationMenuItem>
+                    <NavigationMenuLink href="/dashboard" className={navigationMenuTriggerStyle()}>
+                      Dashboard
+                    </NavigationMenuLink>
+                  </NavigationMenuItem>
+                )}
                 <NavigationMenuItem>
                   <NavigationMenuLink href="/#contact" className={navigationMenuTriggerStyle()}>
                     Contact
@@ -96,9 +105,6 @@ export function NavBar() {
             <DropdownMenuContent align="end">
               {user ? (
                 <>
-                  <DropdownMenuItem onClick={() => router.push("/dashboard")}>
-                    Dashboard
-                  </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => router.push("/settings")}>
                     <Settings className="size-4" />
                     Settings

@@ -15,11 +15,9 @@ export function Dashboard() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-6 gap-2">
         <Nudges />
-        <FoodBudget />
         <MealPlan />
         <ShoppingList />
         <MonthlyExpense />
-        <NutritionCount />
         <MonthlySavings />
       </div>
     </div>

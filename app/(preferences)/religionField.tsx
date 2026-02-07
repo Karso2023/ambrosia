@@ -20,7 +20,7 @@ export function ReligionField({ value, onChange }: ReligionFieldProps) {
 
   return (
     <div className="grid gap-2">
-      <Label>Religious Dietary Requirements</Label>
+      <Label>Religious Dietary Requirements (optional)</Label>
       <div className="flex flex-wrap gap-2">
         {RELIGION_OPTIONS.map((option) => (
           <Button

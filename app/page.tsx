@@ -1,10 +1,14 @@
+"use client"
+
+import { useState } from "react"
 import { NavBar } from "./(navBar)/navBar"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { CircleSmall } from "lucide-react"
-
+import { Frown } from "lucide-react"
+import { Smile } from "lucide-react"
 
 export default function Home() {
   return (
@@ -36,11 +40,23 @@ export default function Home() {
               
               <Card className="text-center bg-white/50">
                 <CardHeader className="text-xl font-semibold">
-                  Problem
+                  Problems
                 </CardHeader>
                 <Separator />
-                <CardDescription className="mt-4 text-center">
-                  Many individuals and families struggle to balance healthy eating with financial constraints. Grocery prices fluctuate frequently, nutritional information is fragmented, and meal planning requires time, knowledge, and effort. This challenge becomes even more complex for users with dietary restrictions such as halal, vegan, or allergy-based requirements. Existing budgeting apps only track expenses after money has been spent, rather than actively helping users optimise their food choices. As a result, people often overspend, compromise on nutrition, or fail to meet their dietary goals.
+                <CardDescription className="mt-4 flex flex-col items-start gap-2 text-left px-4">
+                  <p className="flex items-start gap-2">
+                    <Frown className="size-4 mt-1 flex-shrink-0"/>
+                    Many individuals and families struggle to balance healthy eating with financial constraints.
+                  </p>
+                  <p className="flex items-start gap-2">
+                    <Frown className="size-4 mt-1 flex-shrink-0"/>
+                    Grocery prices fluctuates frequently and nutritional information is fragmented.
+                  </p>
+                  <p className="flex items-start gap-2">
+                    <Frown className="size-4 mt-1 flex-shrink-0"/>
+                    Meal planning requires time, knowledge, and effort.
+                  </p>
+
                 </CardDescription>
               </Card>
 
@@ -49,8 +65,20 @@ export default function Home() {
                   Solution
                 </CardHeader>
                 <Separator />
-                <CardDescription className="mt-4 text-center">
-                  ambrosia.ai is an intelligent meal planning assistant that actively optimises grocery spending while maximising nutritional value. By combining real-time grocery pricing data, nutritional information, and user dietary preferences, Gemini generates personalised weekly meal plans and cost-efficient grocery lists that stay within a user’s budget. The system ensures dietary safety and nutritional accuracy through automated evaluation and validation, while tracking any unspent budget as automatic savings. Instead of simply monitoring expenses, ambrosia.ai proactively engineers smarter food decisions to help users eat well and save money simultaneously.
+                <CardDescription className="mt-4 flex flex-col items-start gap-2 text-left px-4">
+                  <p className="flex items-start gap-2">
+                    <Smile className="size-4 mt-1 flex-shrink-0"/>
+                    Ambrosia actively optimises grocery spending while maximising nutritional value 
+                  </p>
+                  <p className="flex items-start gap-2">
+                    <Smile className="size-4 mt-1 flex-shrink-0"/>
+                    Combines real-time grocery pricing data, nutritional information, and user dietary preferences.
+                  </p>
+                  <p className="flex items-start gap-2">
+                    <Smile className="size-4 mt-1 flex-shrink-0"/>
+                    Ambrosia generates personalised weekly meal plans and cost-efficient grocery lists based on a user's budget.
+                  </p>
+
                 </CardDescription>
               </Card>
 
@@ -59,25 +87,46 @@ export default function Home() {
         </Card>
       </section>
 
-      <section id="howitworks" className="px-6 py-24 max-w-4xl mx-auto text-center">
-        <Card>
-        <h2 className="text-3xl font-bold text-black dark:text-white">How It Works</h2>
-        <p className="mt-4 text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-          <CircleSmall className="size-5"/>Simply set your dietary preferences, location and monthly food budget—then let our AI create optimized weekly meal plans and grocery lists.
-        </p>
+      <section id="howitworks" className="px-6 py-18 max-w-5xl mx-auto">
+        <Card className="bg-white/50 p-8">
+          <CardTitle>
+            <h2 className="text-3xl text-black dark:text-white text-center">How Ambrosia works</h2>
+          </CardTitle>
+          <div className="mt-4 text-gray-600 dark:text-gray-400 max-w-2xl mx-auto flex flex-col items-start gap-2">
+            <p className="flex items-start gap-2">
+              <CircleSmall className="size-3 mt-1 flex-shrink-0"/>
+              Register an account via email, or simply just login with your Google account
+            </p>
+            <p className="flex items-start gap-2">
+              <CircleSmall className="size-3 mt-1 flex-shrink-0"/>
+              Input your personal details such as postcode, monthly food budget, most importantly your religious and dietary requirements and lastly your meal preferences
+            </p>
+            <p className="flex items-start gap-2">
+              <CircleSmall className="size-3 mt-1 flex-shrink-0"/>
+              You could tell our friendly AI more about your preferences (e.g. I want to get big in the gym!)
+            </p>
+            <p className="flex items-start gap-2">
+              <CircleSmall className="size-3 mt-1 flex-shrink-0"/>
+              Click "Finish"
+            </p>
+          </div>
         </Card>
       </section>
 
       <section id="get-started" className="px-6 py-24 max-w-4xl mx-auto text-center">
-        <h2 className="text-3xl font-bold text-black dark:text-white">Get Started</h2>
+        <Card className="bg-white/50 p-8">
+          <CardTitle>
+            <h2 className="text-3xl text-black dark:text-white text-center">Get Started</h2>
+          </CardTitle>
         <p className="mt-4 text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-          Create an account and start planning your meals today.
+          Create an account and start planning your meals today!
         </p>
         <div className="mt-8">
           <Button asChild size="lg">
-            <Link href="/dashboard">Go to Dashboard</Link>
+            <Link href="/register">Sign me up</Link>
           </Button>
         </div>
+        </Card>
       </section>
 
       <section id="contact" className="px-6 py-24 max-w-4xl mx-auto text-center">
