@@ -518,7 +518,7 @@ export function MealPlan() {
 
   return (
     <>
-      <Card className="col-span-full shadow-sm">
+      <Card className="col-span-full shadow-sm bg-green-50">
         <CardHeader className="pb-4">
           <div className="flex items-center justify-between">
             <div>

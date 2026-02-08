@@ -63,8 +63,8 @@ export default function Home() {
       </section>
 
         <section className="section" id="about">
-          <div className="content px-6 py-18 mx-auto flex items-center justify-center">
-            <Card className="bg-white/50 p-8 max-w-5xl">
+          <div className="content px-6 py-18 mx-auto flex items-center justify-center bg-yellow-100">
+            <Card className="bg-yellow-100 p-8 max-w-5xl text-center">
               <CardHeader>
                 <CardTitle>
                   <h2 className="text-3xl text-black dark:text-white text-center">About Us</h2>
@@ -126,7 +126,12 @@ export default function Home() {
         </section>
 
         <section className="section" id="howitworks">
-          <div className="content px-6 max-w-5xl mx-auto flex items-center justify-center bg-gray-200 dark:bg-gray-900">
+            <div 
+              className="content px-6 mx-auto flex items-center justify-center"
+              style={{
+                backgroundColor: '#67b86a'
+              }}
+            >
             <Card className="bg-white/50 p-8">
               <CardTitle>
                 <h2 className="text-3xl text-black dark:text-white text-center">How Ambrosia works</h2>
@@ -155,7 +160,12 @@ export default function Home() {
 
         {!user && (
           <section className="section" id="get-started">
-            <div className="content px-6 max-w-4xl mx-auto flex items-center justify-center bg-gray-200 dark:bg-gray-900">
+            <div 
+              className="content px-6 mx-auto flex items-center justify-center"
+              style={{
+                backgroundColor: '#959995bc'
+              }}
+            >
               <Card className="bg-white/50 p-8">
                 <CardTitle>
                   <h2 className="text-3xl text-black dark:text-white text-center">Get Started</h2>

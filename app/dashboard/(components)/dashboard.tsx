@@ -10,13 +10,12 @@ import { Nudges } from "./nudges"
 
 export function Dashboard() {
   return (
-    <div className="w-full p-6">
+    <div className="w-full p-6 bg-gray-100">
       <h1 className="text-2xl font-bold mb-8 text-black dark:text-white">Dashboard</h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-6 gap-2">
         <Nudges />
         <MealPlan />
-        <ShoppingList />
         <MonthlyExpense />
         <MonthlySavings />
       </div>

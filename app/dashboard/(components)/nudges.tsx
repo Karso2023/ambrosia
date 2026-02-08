@@ -330,7 +330,7 @@ export function Nudges() {
   }
 
   return (
-    <Card className="col-span-full shadow-sm">
+    <Card className="col-span-full shadow-sm bg-yellow-50/50">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <div>

@@ -160,7 +160,7 @@ export function ShoppingList() {
   const progress = totalCount > 0 ? Math.round((checkedCount / totalCount) * 100) : 0
 
   return (
-    <Card className="col-span-full shadow-sm">
+    <Card className="col-span-full shadow-sm bg-red-50">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <div>
