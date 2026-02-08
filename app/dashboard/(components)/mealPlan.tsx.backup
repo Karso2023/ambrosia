@@ -1,0 +1,381 @@
+"use client"
+
+import { useState, useEffect } from "react"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
+import { Calendar, Loader2, RefreshCw, AlertCircle, ExternalLink, MapPin, DollarSign, Apple } from "lucide-react"
+import { Alert, AlertDescription } from "@/components/ui/alert"
+
+interface MealPlanDay {
+  day: number
+  restaurant_id: string
+  restaurant_name: string
+  estimated_cost: number
+  nutrition: string
+}
+
+interface MealPlan {
+  month_year: string
+  total_meals: number
+  restaurants_used: number
+  schedule: MealPlanDay[]
+}
+
+interface RestaurantDetails {
+  id: string
+  name: string
+  address: string
+  phone: string | null
+  rating: number | null
+  price_level: number | null
+  cuisine_types: string[]
+}
+
+export function MealPlan() {
+  const [plan, setPlan] = useState<MealPlan | null>(null)
+  const [generating, setGenerating] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [selectedDay, setSelectedDay] = useState<MealPlanDay | null>(null)
+  const [restaurantDetails, setRestaurantDetails] = useState<RestaurantDetails | null>(null)
+  const [loadingDetails, setLoadingDetails] = useState(false)
+
+  const generatePlan = async () => {
+    setGenerating(true)
+    setError(null)
+    try {
+      const res = await fetch("/api/restaurants/generate-plan", {
+        method: "POST",
+      })
+
+      const data = await res.json()
+      if (res.ok) {
+        setPlan(data.meal_plan?.plan_data)
+      } else {
+        setError(data.error || "Failed to generate meal plan")
+      }
+    } catch (error) {
+      setError("Something went wrong. Please try again.")
+    } finally {
+      setGenerating(false)
+    }
+  }
+
+  const handleDayClick = async (day: MealPlanDay) => {
+    setSelectedDay(day)
+    setLoadingDetails(true)
+
+    try {
+      const res = await fetch(`/api/restaurants/${day.restaurant_id}`)
+      const data = await res.json()
+      if (res.ok) {
+        setRestaurantDetails(data.restaurant)
+      }
+    } catch (error) {
+      console.error("Failed to load restaurant details:", error)
+    } finally {
+      setLoadingDetails(false)
+    }
+  }
+
+  const today = new Date().getDate()
+
+  const getNutritionColor = (nutrition: string) => {
+    if (nutrition === "high") return "text-green-600 dark:text-green-400"
+    if (nutrition === "medium") return "text-yellow-600 dark:text-yellow-400"
+    return "text-orange-600 dark:text-orange-400"
+  }
+
+  const getNutritionBg = (nutrition: string) => {
+    if (nutrition === "high") return "bg-green-100 dark:bg-green-900/20"
+    if (nutrition === "medium") return "bg-yellow-100 dark:bg-yellow-900/20"
+    return "bg-orange-100 dark:bg-orange-900/20"
+  }
+
+  const totalCost = plan?.schedule.reduce((sum, day) => sum + day.estimated_cost, 0) || 0
+  const avgCostPerMeal = plan ? totalCost / plan.total_meals : 0
+
+  const nutritionStats = plan?.schedule.reduce(
+    (acc, day) => {
+      acc[day.nutrition] = (acc[day.nutrition] || 0) + 1
+      return acc
+    },
+    {} as Record<string, number>
+  ) || {}
+
+  return (
+    <>
+      <Card className="col-span-full shadow-sm">
+        <CardHeader className="pb-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle className="flex items-center gap-2 text-xl">
+                <Calendar className="size-5" />
+                Monthly Meal Plan
+              </CardTitle>
+              <CardDescription className="mt-1">
+                {plan
+                  ? `${plan.restaurants_used} restaurants, ${plan.total_meals} meals rotating this month`
+                  : "Generate your personalized meal rotation"}
+              </CardDescription>
+            </div>
+            {plan && (
+              <div className="flex flex-col items-end gap-1">
+                <div className="text-3xl font-bold text-primary">£{totalCost.toFixed(0)}</div>
+                <div className="text-xs text-muted-foreground">total cost</div>
+              </div>
+            )}
+          </div>
+        </CardHeader>
+        <CardContent className="space-y-5">
+          <Button
+            onClick={generatePlan}
+            disabled={generating}
+            variant={plan ? "outline" : "default"}
+            className="w-full h-11 text-base font-medium shadow-sm"
+          >
+            {generating ? (
+              <>
+                <Loader2 className="size-4 animate-spin mr-2" />
+                Generating your plan...
+              </>
+            ) : (
+              <>
+                <RefreshCw className="size-4 mr-2" />
+                {plan ? "Regenerate Plan" : "Generate Meal Plan"}
+              </>
+            )}
+          </Button>
+
+          {error && (
+            <Alert variant="destructive" className="border-destructive/50">
+              <AlertCircle className="size-4" />
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
+
+          {plan && plan.schedule && (
+            <>
+              {/* Monthly Summary */}
+              <div className="grid grid-cols-3 gap-4 p-4 bg-gradient-to-br from-muted/50 to-muted/30 rounded-xl border">
+                <div className="space-y-1">
+                  <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Total Cost</p>
+                  <p className="text-2xl font-bold text-foreground">£{totalCost.toFixed(2)}</p>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Avg per Meal</p>
+                  <p className="text-2xl font-bold text-foreground">£{avgCostPerMeal.toFixed(2)}</p>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Restaurants</p>
+                  <p className="text-2xl font-bold text-primary">{plan.restaurants_used}</p>
+                </div>
+              </div>
+
+              {/* Nutrition Breakdown */}
+              <div className="space-y-3">
+                <p className="text-sm font-semibold text-foreground">Nutrition Balance</p>
+                <div className="flex gap-3">
+                  {Object.entries(nutritionStats).map(([level, count]) => (
+                    <div
+                      key={level}
+                      className={`flex-1 p-3 rounded-xl border-2 ${getNutritionBg(level)} transition-all hover:scale-105`}
+                    >
+                      <p className={`text-sm font-bold mb-1 ${getNutritionColor(level)}`}>
+                        {level.charAt(0).toUpperCase() + level.slice(1)}
+                      </p>
+                      <p className="text-base font-bold text-foreground">
+                        {count} <span className="text-xs font-normal text-muted-foreground">meals</span>
+                      </p>
+                      <p className="text-xs text-muted-foreground mt-0.5">
+                        {Math.round((count / plan.total_meals) * 100)}% of total
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Calendar Grid */}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <p className="text-sm font-semibold text-foreground">Monthly Calendar</p>
+                  <p className="text-xs text-muted-foreground">Click any day for details</p>
+                </div>
+                <div className="grid grid-cols-7 gap-2.5">
+                  {plan.schedule.map((day) => {
+                    const isToday = day.day === today
+                    return (
+                      <button
+                        key={day.day}
+                        onClick={() => handleDayClick(day)}
+                        className={`p-2.5 rounded-xl border-2 transition-all hover:scale-105 hover:shadow-lg text-left group ${
+                          isToday
+                            ? "border-primary bg-primary/10 shadow-md"
+                            : "border-border bg-card hover:border-primary/50"
+                        }`}
+                      >
+                        <div className="text-xs font-bold mb-1 flex items-center justify-between">
+                          <span>Day {day.day}</span>
+                          {isToday && <span className="text-[8px] bg-primary text-primary-foreground px-1.5 py-0.5 rounded-full">TODAY</span>}
+                        </div>
+                        <div className="text-[10px] text-muted-foreground line-clamp-2 mb-1.5 group-hover:text-foreground transition-colors">
+                          {day.restaurant_name || "No meal"}
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-[11px] font-bold text-foreground">£{day.estimated_cost}</span>
+                          <div className={`size-2 rounded-full shadow-sm ${
+                            day.nutrition === "high" ? "bg-green-500" :
+                            day.nutrition === "medium" ? "bg-yellow-500" : "bg-orange-500"
+                          }`} />
+                        </div>
+                      </button>
+                    )
+                  })}
+
+                  {/* Fill remaining days if less than 30 */}
+                  {Array.from({ length: 30 - plan.schedule.length }).map((_, i) => (
+                    <div
+                      key={`empty-${i}`}
+                      className="p-2.5 rounded-xl border-2 border-dashed border-border/40 bg-muted/10"
+                    >
+                      <div className="text-xs font-medium text-muted-foreground/60">
+                        Day {plan.schedule.length + i + 1}
+                      </div>
+                      <div className="text-[10px] text-muted-foreground/50 mt-1">Rest day</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Day Details Dialog */}
+      <Dialog open={!!selectedDay} onOpenChange={(open) => !open && setSelectedDay(null)}>
+        <DialogContent className="max-w-xl">
+          <DialogHeader className="space-y-1">
+            <DialogTitle className="text-2xl font-bold">
+              Day {selectedDay?.day} - {selectedDay?.restaurant_name}
+            </DialogTitle>
+            <DialogDescription className="text-base">
+              View meal details and restaurant information
+            </DialogDescription>
+          </DialogHeader>
+
+          {loadingDetails ? (
+            <div className="flex flex-col items-center justify-center py-12 space-y-3">
+              <Loader2 className="size-8 animate-spin text-primary" />
+              <p className="text-sm text-muted-foreground">Loading restaurant details...</p>
+            </div>
+          ) : restaurantDetails ? (
+            <div className="space-y-5">
+              {/* Cost & Nutrition */}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="p-4 bg-gradient-to-br from-primary/10 to-primary/5 rounded-xl border-2 border-primary/20">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="p-1.5 bg-primary/10 rounded-lg">
+                      <DollarSign className="size-4 text-primary" />
+                    </div>
+                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Estimated Cost</p>
+                  </div>
+                  <p className="text-3xl font-bold text-primary">£{selectedDay?.estimated_cost}</p>
+                </div>
+                <div className={`p-4 rounded-xl border-2 ${getNutritionBg(selectedDay?.nutrition || "")}`}>
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className={`p-1.5 rounded-lg ${getNutritionBg(selectedDay?.nutrition || "")}`}>
+                      <Apple className="size-4" />
+                    </div>
+                    <p className="text-xs font-medium uppercase tracking-wide">Nutrition Level</p>
+                  </div>
+                  <p className={`text-3xl font-bold ${getNutritionColor(selectedDay?.nutrition || "")}`}>
+                    {selectedDay?.nutrition?.charAt(0).toUpperCase() + selectedDay?.nutrition?.slice(1)}
+                  </p>
+                </div>
+              </div>
+
+              {/* Restaurant Info */}
+              <div className="space-y-3 p-4 bg-muted/30 rounded-xl border">
+                <h4 className="font-semibold text-base flex items-center gap-2">
+                  <MapPin className="size-4 text-primary" />
+                  Restaurant Details
+                </h4>
+                <div className="space-y-2.5">
+                  {restaurantDetails.cuisine_types?.[0] && (
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-medium text-muted-foreground bg-muted px-2.5 py-1 rounded-full">
+                        {restaurantDetails.cuisine_types[0]}
+                      </span>
+                    </div>
+                  )}
+                  {restaurantDetails.rating && (
+                    <div className="flex items-center gap-3 text-sm">
+                      <div className="flex items-center gap-1.5 bg-yellow-50 dark:bg-yellow-900/20 px-2.5 py-1 rounded-lg">
+                        <span className="text-xl">⭐</span>
+                        <span className="font-bold text-foreground">{restaurantDetails.rating}</span>
+                        <span className="text-muted-foreground">/5</span>
+                      </div>
+                      {restaurantDetails.price_level && (
+                        <div className="flex items-center gap-1 bg-muted px-2.5 py-1 rounded-lg">
+                          <span className="font-bold text-foreground">
+                            {"£".repeat(restaurantDetails.price_level)}
+                          </span>
+                          <span className="text-muted-foreground text-xs">
+                            {"·".repeat(4 - restaurantDetails.price_level)}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  {restaurantDetails.address && (
+                    <div className="flex items-start gap-2.5 text-sm bg-card p-3 rounded-lg border">
+                      <MapPin className="size-4 shrink-0 mt-0.5 text-primary" />
+                      <span className="text-muted-foreground leading-relaxed">{restaurantDetails.address}</span>
+                    </div>
+                  )}
+                  {restaurantDetails.phone && (
+                    <a
+                      href={`tel:${restaurantDetails.phone}`}
+                      className="flex items-center gap-2.5 text-sm bg-card p-3 rounded-lg border hover:border-primary/50 hover:bg-primary/5 transition-all"
+                    >
+                      <span className="text-xl">📞</span>
+                      <span className="font-medium text-primary hover:underline">
+                        {restaurantDetails.phone}
+                      </span>
+                    </a>
+                  )}
+                </div>
+              </div>
+
+              {/* Actions */}
+              <a
+                href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                  restaurantDetails.name + " " + restaurantDetails.address
+                )}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-2.5 w-full py-3 bg-primary text-primary-foreground rounded-xl hover:bg-primary/90 transition-all shadow-sm hover:shadow-md font-semibold"
+              >
+                <ExternalLink className="size-5" />
+                Open in Google Maps
+              </a>
+            </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center py-12 space-y-2">
+              <AlertCircle className="size-12 text-muted-foreground/50" />
+              <p className="text-sm text-muted-foreground text-center">
+                No details available for this restaurant
+              </p>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+    </>
+  )
+}
