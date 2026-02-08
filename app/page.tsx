@@ -50,13 +50,12 @@ export default function Home() {
           </div>
         </section>
 
-        {/* About Section */}
         <section className="section" id="about">
           <div className="content px-6 py-18 max-w-5xl mx-auto flex items-center justify-center bg-gray-200 dark:bg-gray-900">
             <Card className="bg-white/50 p-8">
               <CardHeader>
                 <CardTitle>
-                  <h2 className="text-3xl text-black dark:text-white">About Us</h2>
+                  <h2 className="text-3xl text-black dark:text-white text-center">About Us</h2>
                 </CardTitle>
                 <p className="mt-4 text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
                   Ambrosia is an intelligent meal planning assistant powered by Gemini that helps you maximize your preferred nutrition whilst minimizing cost. Unlike traditional budgeting apps that only track spending, Ambrosia actively optimizes your grocery choices using real-time pricing, nutritional data, and AI-powered planning.
@@ -114,7 +113,6 @@ export default function Home() {
           </div>
         </section>
 
-        {/* How It Works Section */}
         <section className="section" id="howitworks">
           <div className="content px-6 max-w-5xl mx-auto flex items-center justify-center bg-gray-200 dark:bg-gray-900">
             <Card className="bg-white/50 p-8">
@@ -143,7 +141,6 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Get Started Section */}
         {!user && (
           <section className="section" id="get-started">
             <div className="content px-6 max-w-4xl mx-auto flex items-center justify-center bg-gray-200 dark:bg-gray-900">
@@ -164,7 +161,6 @@ export default function Home() {
           </section>
         )}
 
-        {/* Contact Section */}
         <section className="section" id="contact">
           <div className="content px-6 max-w-4xl mx-auto flex items-center justify-center bg-gray-200 dark:bg-gray-900">
             <div className="text-center">
