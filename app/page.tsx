@@ -6,7 +6,7 @@ import { NavBar } from "./(navBar)/navBar"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
-import { CircleSmall, Frown, Smile } from "lucide-react"
+import { CircleSmall, Frown, Smile, Flower } from "lucide-react"
 import { RegisterDialog } from "./(navBar)/registerPage"
 import { LoginDialog } from "./(navBar)/loginPage"
 import type { User } from "@supabase/supabase-js"
@@ -39,20 +39,32 @@ export default function Home() {
       </div>
       
       <main className="pt-16">
-        <section className="section">
-          <div className="content flex flex-col items-center justify-center px-6 max-w-4xl mx-auto text-center bg-gray-200 dark:bg-gray-900">
-            <h1 className="text-5xl font-bold tracking-tight text-black dark:text-white">
-              Ambrosia
+        <section className="section" id="ambrosia">
+        <div 
+          className="content flex flex-col items-center justify-center px-6 mx-auto text-center relative"
+          style={{
+            backgroundImage: 'url("/bg.jpg")',
+            backgroundSize: '100% 100%',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat'
+          }}
+        >
+          <div className="relative z-10" id="#ambrosia">
+            <h1 className="text-5xl font-bold tracking-tight text-white flex items-center justify-center gap-4">
+              <Flower className="size-10"/> 
+              Ambrosia 
+              <Flower className="size-10"/>
             </h1>
-            <p className="mt-6 text-3xl text-gray-600 dark:text-gray-400">
+            <p className="mt-6 text-3xl text-white">
               Eat well - Spend less - Save automatically
             </p>
           </div>
-        </section>
+        </div>
+      </section>
 
         <section className="section" id="about">
-          <div className="content px-6 py-18 max-w-5xl mx-auto flex items-center justify-center bg-gray-200 dark:bg-gray-900">
-            <Card className="bg-white/50 p-8">
+          <div className="content px-6 py-18 mx-auto flex items-center justify-center">
+            <Card className="bg-white/50 p-8 max-w-5xl">
               <CardHeader>
                 <CardTitle>
                   <h2 className="text-3xl text-black dark:text-white text-center">About Us</h2>
@@ -65,7 +77,7 @@ export default function Home() {
               <CardContent className="mt-10">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
 
-                  <Card className="text-center bg-white/50">
+                  <Card className="text-center bg-red-100/50">
                     <CardHeader className="text-xl font-semibold">
                       Problems
                     </CardHeader>
@@ -86,7 +98,7 @@ export default function Home() {
                     </CardDescription>
                   </Card>
 
-                  <Card className="text-center bg-white/50">
+                  <Card className="text-center bg-green-100/50">
                     <CardHeader className="text-xl font-semibold">
                       Solution
                     </CardHeader>

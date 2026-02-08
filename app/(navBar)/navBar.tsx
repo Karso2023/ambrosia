@@ -1,10 +1,10 @@
 "use client"
 
 import * as React from "react"
-import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { createClient } from "@/lib/client"
 import { LoginDialog } from "./loginPage"
+import Link from "next/link"
 import { RegisterDialog } from "./registerPage"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
@@ -58,11 +58,13 @@ export function NavBar() {
       <nav className="border-b bg-white dark:bg-black p-4">
         <div className="flex items-center justify-between max-w-7xl mx-auto">
           <div className="flex items-center gap-8">
-            <Link href="/" className="text-xl font-bold text-black dark:text-white">
-              Ambrosia
-            </Link>
             <NavigationMenu>
               <NavigationMenuList>
+                <NavigationMenuItem>
+                  <NavigationMenuLink href="/#ambrosia" className="text-xl font-bold text-black dark:text-white">
+                    Ambrosia
+                  </NavigationMenuLink>
+                </NavigationMenuItem>
                 <NavigationMenuItem>
                   <NavigationMenuLink href="/#about" className={navigationMenuTriggerStyle()}>
                     About Us
