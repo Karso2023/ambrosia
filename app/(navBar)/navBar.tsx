@@ -21,7 +21,7 @@ import {
   NavigationMenuList,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu"
-import { Settings } from "lucide-react"
+import { Settings, User2Icon } from "lucide-react"
 import type { User } from "@supabase/supabase-js"
 
 export function NavBar() {
@@ -108,8 +108,8 @@ export function NavBar() {
               {user ? (
                 <>
                   <DropdownMenuItem onClick={() => router.push("/settings")}>
-                    <Settings className="size-4" />
-                    Settings
+                    <User2Icon className="size-4" />
+                    Preferences
                   </DropdownMenuItem>
 
                   <DropdownMenuSeparator />

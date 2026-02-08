@@ -73,7 +73,7 @@ export function RegisterDialog({ isOpen, onClose, onSwitchToLogin }: RegisterDia
           <CardContent>
             {onboardingDone ? (
               <p className="text-sm text-center">
-                Check your email to confirm your account.
+                Account successfully registered!
               </p>
             ) : (
               <form onSubmit={handleRegister}>

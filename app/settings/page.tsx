@@ -16,7 +16,7 @@ import { ReligionField } from "@/app/(preferences)/religionField"
 import { DietaryField } from "@/app/(preferences)/dietaryField"
 import { MealPreferenceField, type MealPreference } from "@/app/(preferences)/mealPreferenceField"
 import { getUserPreferences, setUserPreferences } from "@/lib/preferences"
-import { Settings } from "lucide-react"
+import { Settings, User2, User2Icon } from "lucide-react"
 
 export default function SettingsPage() {
   const [postcode, setPostcode] = useState("")
@@ -62,8 +62,8 @@ export default function SettingsPage() {
       <NavBar />
       <div className="w-full max-w-2xl mx-auto p-6">
         <h1 className="text-2xl font-bold mb-8 text-black dark:text-white flex items-center gap-2">
-          <Settings className="size-6" />
-          Settings
+          <User2Icon className="size-6" />
+          Welcome back!
         </h1>
         <Card>
           <CardHeader>
