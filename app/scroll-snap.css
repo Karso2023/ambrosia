@@ -1,0 +1,47 @@
+@layer base, rhythm, layout, components, default, overwrites;
+
+html {
+  scroll-snap-type: y mandatory;
+  timeline-scope: --section, --main, --site-header;
+}
+
+body,
+.content {
+  background-color: var(--color-background, black);
+}
+
+main {
+  view-timeline: --main;
+}
+
+.section {
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  view-timeline: --section;
+  height: 100dvh;
+}
+
+.content {
+  overflow: hidden;
+  position: fixed;
+  inset: 0;
+  --contrast: 4;
+  --blur: 0.5rem;
+  animation: blink ease-in-out both;
+  animation-timeline: --section;
+}
+
+@keyframes blink {
+  0%,
+  100% {
+    filter: blur(var(--blur)) contrast(var(--contrast));
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  50% {
+    filter: blur(0) contrast(1);
+    opacity: 1;
+    visibility: visible;
+  }
+}
