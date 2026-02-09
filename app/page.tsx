@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef, useMemo } from "react"
 import { createClient } from "@/lib/client"
 import { NavBar } from "./(navBar)/navBar"
 import { Button } from "@/components/ui/button"
@@ -9,12 +9,31 @@ import { Separator } from "@/components/ui/separator"
 import { CircleSmall, Frown, Smile, Flower } from "lucide-react"
 import { RegisterDialog } from "./(navBar)/registerPage"
 import { LoginDialog } from "./(navBar)/loginPage"
+import { useScrollAnimation } from "@/hooks/useScrollAnimation"
 import type { User } from "@supabase/supabase-js"
+import { useRouter } from 'next/navigation'
 
 export default function Home() {
   const [isRegisterOpen, setIsRegisterOpen] = useState(false)
   const [isLoginOpen, setIsLoginOpen] = useState(false)
   const [user, setUser] = useState<User | null>(null)
+  const [currentBgColor, setCurrentBgColor] = useState("#3498db")
+  const router = useRouter()
+
+  // Create refs for each section
+  const ambrosiaRef = useRef<HTMLElement>(null)
+  const aboutRef = useRef<HTMLElement>(null)
+  const howItWorksRef = useRef<HTMLElement>(null)
+  const getStartedRef = useRef<HTMLElement>(null)
+  const contactRef = useRef<HTMLElement>(null)
+
+const sectionColors: { [key: string]: string } = {
+  ambrosia: "#4A90E2",    // Soft Blue - Trust & calm
+  about: "#F8E5B9",       // Cream/Light Yellow - Warmth
+  howitworks: "#7DCEA0",  // Sage Green - Fresh & healthy
+  getstarted: "#F5B7B1",  // Soft Coral - Inviting
+  contact: "#D7DBDD"      // Light Gray - Professional
+}
 
   useEffect(() => {
     const supabase = createClient()
@@ -32,39 +51,73 @@ export default function Home() {
     return () => subscription.unsubscribe()
   }, [])
 
+  // Setup scroll animation with background color changes
+  const refs = useMemo(() => 
+    user 
+      ? [ambrosiaRef, aboutRef, howItWorksRef, contactRef]
+      : [ambrosiaRef, aboutRef, howItWorksRef, getStartedRef, contactRef],
+    [user]
+  )
+
+  useScrollAnimation(refs, {
+    threshold: 0.5,
+    rootMargin: "-50px",
+    onEnter: (element) => {
+      const sectionId = element.id
+      const bgColor = sectionColors[sectionId]
+      if (bgColor) {
+        setCurrentBgColor(bgColor)
+      }
+    }
+  })
+
   return (
     <>
       <div className="fixed top-0 left-0 right-0 z-50">
         <NavBar />
       </div>
       
+      {/* Animated background */}
+      <div 
+        className="fixed inset-0 -z-10 transition-colors duration-1000 ease-in-out"
+        style={{ backgroundColor: currentBgColor }}
+      />
+      
       <main className="pt-16">
-        <section className="section" id="ambrosia">
-        <div 
-          className="content flex flex-col items-center justify-center px-6 mx-auto text-center relative"
-          style={{
-            backgroundImage: 'url("/bg.jpg")',
-            backgroundSize: '100% 100%',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat'
-          }}
+        <section 
+          ref={ambrosiaRef}
+          className="min-h-screen flex items-center justify-center" 
+          id="ambrosia"
         >
-          <div className="relative z-10" id="#ambrosia">
-            <h1 className="text-5xl font-bold tracking-tight text-white flex items-center justify-center gap-4">
-              <Flower className="size-10"/> 
-              Ambrosia 
-              <Flower className="size-10"/>
-            </h1>
-            <p className="mt-6 text-3xl text-white">
-              Eat well - Spend less - Save automatically
-            </p>
+          <div 
+            className="flex flex-col items-center justify-center px-6 mx-auto text-center relative w-full h-screen"
+            style={{
+              backgroundImage: '',
+              backgroundSize: '100% 100%',
+              backgroundPosition: 'center',
+              backgroundRepeat: 'no-repeat'
+            }}
+          >
+            <div className="relative z-10">
+              <h1 className="text-5xl font-bold tracking-tight text-white flex items-center justify-center gap-4 animate-slide-up">
+                <Flower className="size-10"/> 
+                Ambrosia 
+                <Flower className="size-10"/>
+              </h1>
+              <p className="mt-6 text-3xl text-white animate-slide-up animation-delay-200">
+                Eat well - Spend less - Save automatically
+              </p>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-        <section className="section" id="about">
-          <div className="content px-6 py-18 mx-auto flex items-center justify-center bg-yellow-100">
-            <Card className="bg-yellow-100 p-8 max-w-5xl text-center">
+        <section 
+          ref={aboutRef}
+          className="min-h-screen flex items-center justify-center" 
+          id="about"
+        >
+          <div className="px-6 py-18 mx-auto flex items-center justify-center w-full">
+            <Card className="bg-white/60 backdrop-blur-sm p-8 max-w-5xl text-center animate-fade-in">
               <CardHeader>
                 <CardTitle>
                   <h2 className="text-3xl text-black dark:text-white text-center">About Us</h2>
@@ -76,8 +129,7 @@ export default function Home() {
 
               <CardContent className="mt-10">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-
-                  <Card className="text-center bg-red-100/50">
+                  <Card className="text-center bg-red-100/50 animate-slide-in-left">
                     <CardHeader className="text-xl font-semibold">
                       Problems
                     </CardHeader>
@@ -98,7 +150,7 @@ export default function Home() {
                     </CardDescription>
                   </Card>
 
-                  <Card className="text-center bg-green-100/50">
+                  <Card className="text-center bg-green-100/50 animate-slide-in-right">
                     <CardHeader className="text-xl font-semibold">
                       Solution
                     </CardHeader>
@@ -118,21 +170,19 @@ export default function Home() {
                       </p>
                     </CardDescription>
                   </Card>
-
                 </div>
               </CardContent>
             </Card>
           </div>
         </section>
 
-        <section className="section" id="howitworks">
-            <div 
-              className="content px-6 mx-auto flex items-center justify-center"
-              style={{
-                backgroundColor: '#67b86a'
-              }}
-            >
-            <Card className="bg-white/50 p-8">
+        <section 
+          ref={howItWorksRef}
+          className="min-h-screen flex items-center justify-center" 
+          id="howitworks"
+        >
+          <div className="px-6 mx-auto flex items-center justify-center w-full">
+            <Card className="bg-white/60 backdrop-blur-sm p-8 animate-fade-in">
               <CardTitle>
                 <h2 className="text-3xl text-black dark:text-white text-center">How Ambrosia works</h2>
               </CardTitle>
@@ -159,14 +209,13 @@ export default function Home() {
         </section>
 
         {!user && (
-          <section className="section" id="get-started">
-            <div 
-              className="content px-6 mx-auto flex items-center justify-center"
-              style={{
-                backgroundColor: '#959995bc'
-              }}
-            >
-              <Card className="bg-white/50 p-8">
+          <section 
+            ref={getStartedRef}
+            className="min-h-screen flex items-center justify-center" 
+            id="getstarted"
+          >
+            <div className="px-6 mx-auto flex items-center justify-center w-full">
+              <Card className="bg-white/90 backdrop-blur-sm p-8 animate-fade-in">
                 <CardTitle>
                   <h2 className="text-3xl text-black dark:text-white text-center">Get Started</h2>
                 </CardTitle>
@@ -183,9 +232,13 @@ export default function Home() {
           </section>
         )}
 
-        <section className="section" id="contact">
-          <div className="content px-6 max-w-4xl mx-auto flex items-center justify-center bg-gray-200 dark:bg-gray-900">
-            <div className="text-center">
+        <section 
+          ref={contactRef}
+          className="min-h-screen flex items-center justify-center" 
+          id="contact"
+        >
+          <div className="px-6 max-w-4xl mx-auto flex items-center justify-center w-full">
+            <div className="text-center animate-fade-in">
               <h2 className="text-3xl font-bold text-black dark:text-white">Contact</h2>
               <p className="mt-4 text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
                 Have questions or feedback? Reach out to us.

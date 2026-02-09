@@ -55,13 +55,13 @@ export function NavBar() {
 
   return (
     <>
-      <nav className="border-b bg-white dark:bg-black p-4">
-        <div className="flex items-center justify-between max-w-7xl mx-auto">
-          <div className="flex items-center gap-8">
+      <nav className="border-b bg-white dark:bg-black p-2">
+        <div className="flex items-center justify-between mx-auto">
+          <div className="flex items-center">
             <NavigationMenu>
               <NavigationMenuList>
                 <NavigationMenuItem>
-                  <NavigationMenuLink href="/#ambrosia" className="text-xl font-bold text-black dark:text-white">
+                  <NavigationMenuLink href="/#ambrosia" className="text-2xl font-bold text-black dark:text-white">
                     Ambrosia
                   </NavigationMenuLink>
                 </NavigationMenuItem>

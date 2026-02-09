@@ -62,17 +62,9 @@ export function RegisterDialog({ isOpen, onClose, onSwitchToLogin }: RegisterDia
         <OnboardingWizard onComplete={() => setOnboardingDone(true)} />
       ) : (
         <Card className="w-full max-w-sm">
-          <CardHeader>
-            <CardTitle>
-              {onboardingDone ? "Almost there!" : "Register an account"}
-            </CardTitle>
-            <CardAction>
-              <Button variant="outline" onClick={onClose}>X</Button>
-            </CardAction>
-          </CardHeader>
           <CardContent>
             {onboardingDone ? (
-              <p className="text-sm text-center">
+              <p className="text-m text-center">
                 Account successfully registered!
               </p>
             ) : (
@@ -120,20 +112,32 @@ export function RegisterDialog({ isOpen, onClose, onSwitchToLogin }: RegisterDia
             )}
           </CardContent>
           <CardFooter className="flex-col gap-2">
-            <div className="text-center text-sm mt-2 ">
-              Already have an account?{" "}
-              <a
-                href="#"
-                className="underline w-full hover:text-blue-600"
-                onClick={(e) => {
-                  e.preventDefault()
-                  onClose()
-                  onSwitchToLogin()
-                }}
-              >
-                Login
-              </a>
-            </div>
+            {onboardingDone ? (
+              <div className="text-center text-sm mt-2">
+                Ready to get started?{" "}
+                <a
+                  href="/dashboard"
+                  className="underline hover:text-blue-600"
+                >
+                  Go to Dashboard
+                </a>
+              </div>
+            ) : (
+              <div className="text-center text-sm mt-2">
+                Already have an account?{" "}
+                <a
+                  href="#"
+                  className="underline hover:text-blue-600"
+                  onClick={(e) => {
+                    e.preventDefault()
+                    onClose()
+                    onSwitchToLogin()
+                  }}
+                >
+                  Login
+                </a>
+              </div>
+            )}
           </CardFooter>
         </Card>
       )}
