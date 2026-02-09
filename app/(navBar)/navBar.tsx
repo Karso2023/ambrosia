@@ -4,8 +4,8 @@ import * as React from "react"
 import { useRouter } from "next/navigation"
 import { createClient } from "@/lib/client"
 import { LoginDialog } from "./loginPage"
-import Link from "next/link"
 import { RegisterDialog } from "./registerPage"
+import Link from "next/link"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
   DropdownMenu,
@@ -21,7 +21,7 @@ import {
   NavigationMenuList,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu"
-import { Settings, User2Icon } from "lucide-react"
+import { Menu, X, User2Icon } from "lucide-react"
 import type { User } from "@supabase/supabase-js"
 
 export function NavBar() {
@@ -29,6 +29,7 @@ export function NavBar() {
   const [user, setUser] = React.useState<User | null>(null)
   const [isLoginOpen, setIsLoginOpen] = React.useState(false)
   const [isRegisterOpen, setIsRegisterOpen] = React.useState(false)
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false)
 
   React.useEffect(() => {
     const supabase = createClient()
@@ -55,21 +56,26 @@ export function NavBar() {
 
   return (
     <>
-      <nav className="border-b bg-white dark:bg-black p-2">
-        <div className="flex items-center justify-between mx-auto">
-          <div className="flex items-center">
+      <nav className="border-b bg-white dark:bg-black px-4 py-3">
+        <div className="flex items-center justify-between">
+
+          <Link
+            href="/#ambrosia"
+            className="text-2xl font-bold text-black dark:text-white"
+          >
+            Ambrosia
+          </Link>
+
+          {/* Desktop Nav */}
+          <div className="hidden md:flex items-center gap-6">
             <NavigationMenu>
               <NavigationMenuList>
-                <NavigationMenuItem>
-                  <NavigationMenuLink href="/#ambrosia" className="text-2xl font-bold text-black dark:text-white">
-                    Ambrosia
-                  </NavigationMenuLink>
-                </NavigationMenuItem>
                 <NavigationMenuItem>
                   <NavigationMenuLink href="/#about" className={navigationMenuTriggerStyle()}>
                     About Us
                   </NavigationMenuLink>
                 </NavigationMenuItem>
+
                 {!user && (
                   <NavigationMenuItem>
                     <NavigationMenuLink href="/#get-started" className={navigationMenuTriggerStyle()}>
@@ -77,6 +83,7 @@ export function NavBar() {
                     </NavigationMenuLink>
                   </NavigationMenuItem>
                 )}
+
                 {user && (
                   <NavigationMenuItem>
                     <NavigationMenuLink href="/dashboard" className={navigationMenuTriggerStyle()}>
@@ -84,6 +91,7 @@ export function NavBar() {
                     </NavigationMenuLink>
                   </NavigationMenuItem>
                 )}
+
                 <NavigationMenuItem>
                   <NavigationMenuLink href="/#contact" className={navigationMenuTriggerStyle()}>
                     Contact
@@ -91,45 +99,115 @@ export function NavBar() {
                 </NavigationMenuItem>
               </NavigationMenuList>
             </NavigationMenu>
+
+            {/* Desktop Avatar Dropdown */}
+            <DropdownMenu modal={false}>
+              <DropdownMenuTrigger asChild>
+                <button className="rounded-full outline-none">
+                  <Avatar className="h-9 w-9">
+                    <AvatarImage src={user?.user_metadata?.avatar_url} />
+                    <AvatarFallback>
+                      {user ? user.email?.charAt(0).toUpperCase() : "?"}
+                    </AvatarFallback>
+                  </Avatar>
+                </button>
+              </DropdownMenuTrigger>
+
+              <DropdownMenuContent align="end" sideOffset={5}>
+                {user ? (
+                  <>
+                    <DropdownMenuItem onClick={() => router.push("/settings")}>
+                      <User2Icon className="size-4 mr-2" />
+                      Preferences
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={handleLogout}>
+                      Log out
+                    </DropdownMenuItem>
+                  </>
+                ) : (
+                  <>
+                    <DropdownMenuItem onClick={() => setIsLoginOpen(true)}>
+                      Login
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setIsRegisterOpen(true)}>
+                      Register
+                    </DropdownMenuItem>
+                  </>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
 
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button className="rounded-full outline-none focus-visible:ring-2 focus-visible:ring-ring">
-                <Avatar className="h-9 w-9">
-                  <AvatarImage src={user?.user_metadata?.avatar_url} alt={user?.email ?? ""} />
-                  <AvatarFallback>
-                    {user ? user.email?.charAt(0).toUpperCase() : "?"}
-                  </AvatarFallback>
-                </Avatar>
-              </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              {user ? (
-                <>
-                  <DropdownMenuItem onClick={() => router.push("/settings")}>
-                    <User2Icon className="size-4" />
-                    Preferences
-                  </DropdownMenuItem>
+          {/* Mobile Controls */}
+          <div className="flex items-center gap-3 md:hidden">
+            <DropdownMenu modal={false}>
+              <DropdownMenuTrigger asChild>
+                <button className="rounded-full outline-none">
+                  <Avatar className="h-9 w-9">
+                    <AvatarFallback>
+                      {user ? user.email?.charAt(0).toUpperCase() : "?"}
+                    </AvatarFallback>
+                  </Avatar>
+                </button>
+              </DropdownMenuTrigger>
 
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={handleLogout}>
-                    Log out
-                  </DropdownMenuItem>
-                </>
-              ) : (
-                <>
-                  <DropdownMenuItem onClick={() => setIsLoginOpen(true)}>
-                    Login
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setIsRegisterOpen(true)}>
-                    Register
-                  </DropdownMenuItem>
-                </>
-              )}
-            </DropdownMenuContent>
-          </DropdownMenu>
+              <DropdownMenuContent align="end">
+                {user ? (
+                  <>
+                    <DropdownMenuItem onClick={() => router.push("/settings")}>
+                      Preferences
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={handleLogout}>
+                      Log out
+                    </DropdownMenuItem>
+                  </>
+                ) : (
+                  <>
+                    <DropdownMenuItem onClick={() => setIsLoginOpen(true)}>
+                      Login
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setIsRegisterOpen(true)}>
+                      Register
+                    </DropdownMenuItem>
+                  </>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="text-black dark:text-white"
+            >
+              {isMobileMenuOpen ? <X /> : <Menu />}
+            </button>
+          </div>
         </div>
+
+        {isMobileMenuOpen && (
+          <div className="mt-4 flex flex-col gap-4 md:hidden">
+            <Link href="/#about" onClick={() => setIsMobileMenuOpen(false)}>
+              About Us
+            </Link>
+
+            {!user && (
+              <Link href="/#get-started" onClick={() => setIsMobileMenuOpen(false)}>
+                Get Started
+              </Link>
+            )}
+
+            {user && (
+              <Link href="/dashboard" onClick={() => setIsMobileMenuOpen(false)}>
+                Dashboard
+              </Link>
+            )}
+
+            <Link href="/#contact" onClick={() => setIsMobileMenuOpen(false)}>
+              Contact
+            </Link>
+          </div>
+        )}
       </nav>
 
       <LoginDialog isOpen={isLoginOpen} onClose={() => setIsLoginOpen(false)} />
