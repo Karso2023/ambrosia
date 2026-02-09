@@ -212,7 +212,7 @@ const sectionColors: { [key: string]: string } = {
           <section 
             ref={getStartedRef}
             className="min-h-screen flex items-center justify-center" 
-            id="getstarted"
+            id="get-started"
           >
             <div className="px-6 mx-auto flex items-center justify-center w-full">
               <Card className="bg-white/90 backdrop-blur-sm p-8 animate-fade-in">
